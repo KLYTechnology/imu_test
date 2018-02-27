@@ -62,15 +62,15 @@ def imuRead(bno):
 	y_gyro = y_gyro/180*np.pi
 	z_gyro = z_gyro/180*np.pi
 	ang_accel = Vector3()
-	ang_accel.x = -x_gyro
-	ang_accel.y = z_gyro
-	ang_accel.z = -y_gyro
+	ang_accel.x = x_gyro
+	ang_accel.y = y_gyro
+	ang_accel.z = z_gyro
     # Accelerometer data (in meters per second squared):
 	x_accel,y_accel,z_accel = bno.read_accelerometer()
 	lr_accel = Vector3()
-	lr_accel.x = -x_accel
-	lr_accel.y = z_accel
-	lr_accel.z = -y_accel
+	lr_accel.x = x_accel
+	lr_accel.y = y_accel
+	lr_accel.z = z_accel
 	print("x: {0}".format(lr_accel.x))
 	print("y: {0}".format(lr_accel.y))
 	print("z: {0}".format(lr_accel.z))
@@ -85,7 +85,7 @@ def imuRead(bno):
 def imuPub(bno):
 	pub = rospy.Publisher('/imu0', Imu, queue_size=200)
 	rospy.init_node('imu_BNO_pub', anonymous = True)
-	r = rospy.Rate(200)
+	r = rospy.Rate(20)
 	msg = Imu()
 	
 	while not rospy.is_shutdown():
