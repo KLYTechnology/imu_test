@@ -58,14 +58,10 @@ def imuRead(bno):
 	
     # Gyroscope data (in degrees per second):
 	x_gyro,y_gyro,z_gyro = bno.read_gyroscope()
-	#~ convert to rad/s
-	#~ x_gyro = x_gyro/180*np.pi
-	#~ y_gyro = y_gyro/180*np.pi
-	#~ z_gyro = z_gyro/180*np.pi
 	ang_accel = Vector3()
-	ang_accel.x = x_gyro
-	ang_accel.y = y_gyro
-	ang_accel.z = z_gyro
+	ang_accel.x = x_gyro/180*np.pi
+	ang_accel.y = y_gyro/180*np.pi
+	ang_accel.z = z_gyro/180*np.pi
 	
     # Accelerometer data (in meters per second squared):
 	x_accel,y_accel,z_accel = bno.read_accelerometer()
