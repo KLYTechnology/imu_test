@@ -45,56 +45,62 @@ def imuRead(bno):
           #~ heading, roll, pitch, sys, gyro, accel, mag))
 	# Other values you can optionally read:
     # Orientation as a quaternion:
-	x_qt,y_qt,z_qt,w_qt = bno.read_quaternion()
-	q = Quaternion()
-	q.x = x_qt
-	q.y = y_qt
-	q.z = z_qt
-	q.w = w_qt
+	#~ x_qt,y_qt,z_qt,w_qt = bno.read_quaternion()
+	#~ q = Quaternion()
+	#~ q.x = x_qt
+	#~ q.y = y_qt
+	#~ q.z = z_qt
+	#~ q.w = w_qt
     # Sensor temperature in degrees Celsius:
     #temp_c = bno.read_temp()
     # Magnetometer data (in micro-Teslas):
 	#~ x_mag,y_mag,z_mag = bno.read_magnetometer()
+	
     # Gyroscope data (in degrees per second):
 	x_gyro,y_gyro,z_gyro = bno.read_gyroscope()
 	#~ convert to rad/s
-	x_gyro = x_gyro/180*np.pi
-	y_gyro = y_gyro/180*np.pi
-	z_gyro = z_gyro/180*np.pi
+	#~ x_gyro = x_gyro/180*np.pi
+	#~ y_gyro = y_gyro/180*np.pi
+	#~ z_gyro = z_gyro/180*np.pi
 	ang_accel = Vector3()
 	ang_accel.x = x_gyro
 	ang_accel.y = y_gyro
 	ang_accel.z = z_gyro
+	
     # Accelerometer data (in meters per second squared):
 	x_accel,y_accel,z_accel = bno.read_accelerometer()
 	lr_accel = Vector3()
 	lr_accel.x = x_accel
 	lr_accel.y = y_accel
 	lr_accel.z = z_accel
-	print("x: {0}".format(lr_accel.x))
-	print("y: {0}".format(lr_accel.y))
-	print("z: {0}".format(lr_accel.z))
+	
+	## check 2-norm of Accelerometer data
+	#~ print np.sqrt(x_accel**2 + y_accel**2 + z_accel**2)
+	
+	#~ print("x: {0}".format(lr_accel.x))
+	#~ print("y: {0}".format(lr_accel.y))
+	#~ print("z: {0}".format(lr_accel.z))
 	# Linear acceleration data (i.e. acceleration from movement, not gravity--
 	# returned in meters per second squared):
 	#x,y,z = bno.read_linear_acceleration()
 	# Gravity acceleration data (i.e. acceleration just from gravity--returned
 	# in meters per second squared):
 	#x,y,z = bno.read_gravity()
-	return q, ang_accel, lr_accel
+	return ang_accel, lr_accel
 
 def imuPub(bno):
 	pub = rospy.Publisher('/imu0', Imu, queue_size=200)
 	rospy.init_node('imu_BNO_pub', anonymous = True)
-	r = rospy.Rate(20)
+	r = rospy.Rate(100)  # max is about 112Hz
 	msg = Imu()
 	
 	while not rospy.is_shutdown():
 		#print('publishing imu data')
-		q, ang_accel, lr_accel = imuRead(bno)
+		ang_accel, lr_accel = imuRead(bno)
 		
 		msg.header.stamp = rospy.Time.now()
 		msg.header.frame_id = 'BNO055'
-		msg.orientation = q
+		#~ msg.orientation = q
 		msg.angular_velocity = ang_accel
 		msg.linear_acceleration = lr_accel
 		
